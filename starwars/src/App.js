@@ -13,8 +13,25 @@ class App extends Component {
 
   componentDidMount() {
     this.getCharacters('https://swapi.co/api/people/');
+    window.onscroll = ()=> this.scrolling();
   }
 
+  scrollbottom = null;
+  gathering = true;
+  passoff = null;
+  
+  scrolling()
+  {
+    if(!this.scrollbottom){let a = [...document.querySelectorAll(".char-container")]; this.scrollbottom = a[a.length-5 > 0 ? a.length-5 : 0].offsetTop;}
+    if(this.scrollbottom <= window.pageYOffset+window.screen.height && !this.gathering)
+    {
+     
+      this.getCharacters(`https://swapi.co/api/people/${this.state.starwarsChars.length+1}/`);
+      this.setState(this.state);
+      this.gathering = true;
+    }
+
+  }
   getCharacters = URL => {
     // feel free to research what this code is doing.
     // At a high level we are calling an API to fetch some starwars data from the open web.
@@ -24,11 +41,17 @@ class App extends Component {
         return res.json();
       })
       .then(data => {
-        this.setState({ starwarsChars: data.results});
+        this.passoff = data;
+        this.setState({ starwarsChars: [...this.state.starwarsChars, ...data.results ]});
+        this.gathering = false;
+        this.scrollbottom = null;
+        this.passoff = null;
       })
       .catch(err => {
-        throw new Error(err);
-      });
+        this.setState({ starwarsChars: [...this.state.starwarsChars, this.passoff]});
+        this.gathering = false;
+        this.scrollbottom = null;
+      }).catch( () => {console.log("error");this.gathering = true;});
   };
 //<li>Home World: { fetch(x.homeworld).then(res=> res.json()).then(data => data.results).catch(err => {throw new Error(err)})}</li>
   render() {
@@ -36,6 +59,7 @@ class App extends Component {
     let l = this.state.starwarsChars.map( (x,i) =>
     {
       let j = 0;
+        if(x.name === undefined) return"";
         return (
           <div className="char-container" key={i} > <h3>{x.name}</h3>
             <div className="apperence">
@@ -70,10 +94,10 @@ class App extends Component {
         );
     }
     );
-
     return (
       <div className="container">
         <h1 className="Header">React Wars</h1>
+        <div className="image"></div>
         <div className="content">
         {l}
         </div>
