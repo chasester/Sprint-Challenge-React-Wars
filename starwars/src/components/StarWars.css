@@ -1,0 +1,35 @@
+.char-container
+{
+    margin: 20px 0;
+    background-color: #AAAAAA88;
+    padding: 20px;
+}
+
+.data-lists
+{
+    display: flex;
+}
+
+
+.list-container
+{
+  margin: 20px 20px 20px 0;
+  width: 50%;
+}
+
+.meta
+{
+  display: flex;
+  width: 100%;
+  color:gray;
+  font-size: 12px;
+  justify-content: space-between;
+}
+
+.apperence
+{
+    display: flex;
+    justify-content: space-between;
+    width: 40%;
+    margin-bottom: 20px;
+}
